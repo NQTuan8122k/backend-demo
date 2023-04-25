@@ -1,18 +1,6 @@
-import { Task } from 'src/task/task.entity/task.entity';
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  OneToMany,
-  ManyToMany,
-  JoinTable,
-} from 'typeorm';
+import { Column } from 'typeorm';
 
-@Entity()
-export class UserEntity {
-  @PrimaryGeneratedColumn()
-  id: number;
-
+export class UserDto {
   @Column()
   firstName: string;
 
