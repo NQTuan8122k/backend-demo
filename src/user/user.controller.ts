@@ -1,67 +1,97 @@
 import dayjs from 'dayjs';
-import { Body, Controller, Get, HttpStatus, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  ForbiddenException,
+  Get,
+  HttpCode,
+  HttpException,
+  HttpStatus,
+  Post,
+  UseFilters,
+  NotFoundException,
+  BadGatewayException,
+  BadRequestException,
+  UnauthorizedException,
+  Response,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserEntity } from './user.entity/user.entity';
 import { UserLoginDto, UserRegisterDto } from './dto/user.dto';
 import moment from 'moment';
 import { response } from 'express';
+import { AllExceptionsFilter } from 'src/utils/http-exception.filter';
+import { HttpAdapterHost } from '@nestjs/core';
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
-  @Post()
-  create(@Body() signupData: UserRegisterDto) {
-    const createAt = moment.now();
-    try {
-      this.userService
-        .findOne({ username: signupData.username })
-        ?.then((res) => {
-          if (!!res.username) {
-            return response
-              .status(HttpStatus.BAD_REQUEST)
-              .send('Duplicate username');
-          }
-        });
-    } catch (error) {
-      return response
-        .status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .send('Something error');
-    }
+  @Post('signup')
+  create(@Response() response, @Body() signupData: UserRegisterDto) {
+    this.userService
+      .findOne({ username: signupData.username })
+      ?.then((res) => {
+        if (!!res.username) {
+          response.status(HttpStatus.BAD_REQUEST).json({
+            status: 400,
+            description: 'Duplicate username',
+            error_message: 'Duplicate username',
+          });
+        }
+      })
+      .catch((error) => {
+        const errorData = {
+          message: 'Something error',
+          errorCode: 502,
+          timestamp: new Date().toISOString(),
+        };
+        console.log('=======0', error);
+
+        throw new HttpException(errorData, HttpStatus.BAD_REQUEST);
+      });
 
     this.userService
       .create({
         ...signupData,
-        createAt: dayjs(createAt, 'MM-DD-YYYY'),
+        createAt: new Date().toISOString(),
       })
       .then((res) => {
-        return response.status(HttpStatus.CREATED).send({ data: res });
+        response
+          .status(HttpStatus.CREATED)
+          .json({ status: 201, description: 'Create success', data: res });
+      })
+      .catch((error) => {
+        const errorData = {
+          message: 'Something error',
+          errorCode: 502,
+          timestamp: new Date().toISOString(),
+        };
+        console.log('=======0', error);
+
+        throw new HttpException(errorData, HttpStatus.BAD_REQUEST);
       });
 
-    return response
-      .status(HttpStatus.INTERNAL_SERVER_ERROR)
-      .send('Something error');
+    // throw new HttpException(errorData, HttpStatus.BAD_GATEWAY);
   }
 
-  @Post()
-  findOne(@Body() loginData: UserLoginDto) {
-    const result = this.userService.findOne({
-      ...loginData,
+  @Post('login')
+  findOne(@Response() response, @Body() loginData: UserLoginDto) {
+    this.userService.findOne({ username: loginData.username })?.then((res) => {
+      if (
+        !!res?.username &&
+        res?.password == loginData.password &&
+        !!res?.password !== false
+      ) {
+        response
+          .status(HttpStatus.OK)
+          .json({ status: 200, description: 'Login success', data: res });
+      } else {
+        response.status(405).json({
+          status: 405,
+          description: 'Wrong username or password',
+          error_message: 'Wrong username or password',
+        });
+      }
     });
-
-    if (
-      result.then((res) => {
-        if (res.status == 'Active') {
-          return response.status(HttpStatus.ACCEPTED).send({ data: res });
-        }
-      })
-    )
-      return response
-        .status(HttpStatus.UNAUTHORIZED)
-        .send('Wrong username or password');
-  }
-
-  @Get()
-  getHello(): string {
-    return 'hello';
   }
 }

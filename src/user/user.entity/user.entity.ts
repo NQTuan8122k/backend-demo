@@ -1,4 +1,3 @@
-import { Dayjs } from 'dayjs';
 import { Task } from 'src/task/task.entity/task.entity';
 import {
   Entity,
@@ -18,7 +17,7 @@ export class UserEntity {
   fullName: string;
 
   @Column()
-  dateOfBirth: Dayjs;
+  dateOfBirth: string;
 
   @Column()
   password: string;
@@ -39,8 +38,8 @@ export class UserEntity {
   status: string;
 
   @Column()
-  createAt: Dayjs;
+  createAt: string;
 
-  @Column()
-  lastModify: Dayjs | null;
+  @Column({ default: null })
+  lastModify: string | null;
 }

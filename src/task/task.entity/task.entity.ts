@@ -22,7 +22,7 @@ export class Task {
   @Column()
   isDone: boolean;
 
-  @ManyToMany(() => UserEntity)
-  @JoinTable()
-  user: UserEntity[];
+  // @ManyToMany(() => UserEntity)
+  // @JoinTable()
+  // user: UserEntity[];
 }

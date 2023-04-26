@@ -31,4 +31,10 @@ export class UserService {
   async delete(id): Promise<DeleteResult> {
     return await this.taskRepo.delete(id);
   }
+
+  formatDateTime() {
+    const date = new Date();
+
+    return date.getMonth() + '-' + date.getDay() + '-' + date.getFullYear();
+  }
 }
