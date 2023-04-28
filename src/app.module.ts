@@ -6,7 +6,7 @@ import { APP_FILTER } from '@nestjs/core';
 import { AllExceptionsFilter } from './exceptions/http-exception.filter';
 import { UserModule } from './modules/user/user.module';
 import { LoginModule } from './modules/login/login.module';
-import { TaskModule } from './modules/task/task.module';
+import { SignupModule } from './modules/signup/signup.module';
 
 @Module({
   imports: [
@@ -21,9 +21,9 @@ import { TaskModule } from './modules/task/task.module';
       synchronize: true,
       autoLoadEntities: true,
     }),
-    TaskModule,
     UserModule,
     LoginModule,
+    SignupModule,
   ],
   controllers: [AppController],
   providers: [

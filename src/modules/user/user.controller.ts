@@ -60,25 +60,4 @@ export class UserController {
         });
     }
   }
-
-  // @Post('login')
-  // findOne(@Response() response, @Body() loginData: UserLoginRequestDto) {
-  //   this.userService.findOne({ username: loginData.username })?.then((res) => {
-  //     if (
-  //       !!res?.username &&
-  //       res?.password == loginData.password &&
-  //       !!res?.password !== false
-  //     ) {
-  //       response
-  //         .status(HttpStatus.OK)
-  //         .json({ status: 200, description: 'Login success', data: res });
-  //     } else {
-  //       response.status(405).json({
-  //         status: 405,
-  //         description: 'Wrong username or password',
-  //         error_message: 'Wrong username or password',
-  //       });
-  //     }
-  //   });
-  // }
 }
