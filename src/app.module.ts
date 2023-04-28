@@ -2,11 +2,11 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { TaskModule } from './task/task.module';
-import { UserModule } from './user/user.module';
-import { LoginModule } from './login/login.module';
 import { APP_FILTER } from '@nestjs/core';
-import { AllExceptionsFilter } from './utils/http-exception.filter';
+import { AllExceptionsFilter } from './exceptions/http-exception.filter';
+import { UserModule } from './modules/user/user.module';
+import { LoginModule } from './modules/login/login.module';
+import { TaskModule } from './modules/task/task.module';
 
 @Module({
   imports: [
@@ -23,7 +23,7 @@ import { AllExceptionsFilter } from './utils/http-exception.filter';
     }),
     TaskModule,
     UserModule,
-    // LoginModule,
+    LoginModule,
   ],
   controllers: [AppController],
   providers: [

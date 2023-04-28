@@ -1,4 +1,3 @@
-import { Task } from 'src/task/task.entity/task.entity';
 import {
   Entity,
   Column,
@@ -14,7 +13,7 @@ export class UserEntity {
   userId: number;
 
   @Column()
-  fullName: string;
+  fullname: string;
 
   @Column()
   dateOfBirth: string;

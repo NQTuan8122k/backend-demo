@@ -1,6 +1,6 @@
 import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { AllExceptionsFilter } from './utils/http-exception.filter';
+import { AllExceptionsFilter } from './exceptions/http-exception.filter';
 
 declare const module: any;
 
