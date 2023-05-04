@@ -1,3 +1,4 @@
+import { RoleType } from 'src/constants/role-file';
 import {
   Entity,
   Column,
@@ -41,4 +42,7 @@ export class UserEntity {
 
   @Column({ default: null })
   lastModify: string | null;
+
+  @Column({ default: RoleType.USER })
+  role: string;
 }

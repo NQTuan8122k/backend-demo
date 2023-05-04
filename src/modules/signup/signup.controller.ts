@@ -1,4 +1,11 @@
-import { Body, Controller, HttpStatus, Post, Response } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpStatus,
+  Post,
+  Response,
+  ValidationPipe,
+} from '@nestjs/common';
 import { UserRegisterDto } from 'src/dtos/response/user.dto';
 import { SignupService } from './signup.service';
 
@@ -7,7 +14,10 @@ export class SignupController {
   constructor(private readonly signupService: SignupService) {}
 
   @Post()
-  async create(@Response() response, @Body() signupData: UserRegisterDto) {
+  async create(
+    @Response() response,
+    @Body(new ValidationPipe({ transform: true })) signupData: UserRegisterDto,
+  ) {
     try {
       const user = await this.signupService.findOne({
         username: signupData?.username,
@@ -35,8 +45,6 @@ export class SignupController {
             response_message: 'Create success',
             response_description: 'Create new user success',
             request_date_time: new Date().toISOString(),
-            access_token: 'string',
-            refresh_token: 'string',
             data: signupUser,
           });
         } else {

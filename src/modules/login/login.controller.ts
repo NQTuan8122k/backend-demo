@@ -1,14 +1,24 @@
-import { Controller, Post, Body, Response, HttpStatus } from '@nestjs/common';
-import { LoginService } from './login.service';
+import {
+  Body,
+  Controller,
+  HttpStatus,
+  Post,
+  Response,
+  ValidationPipe,
+} from '@nestjs/common';
 import { UserLoginRequestDto } from 'src/dtos/request/login.req.dto';
-import { DEFAULT_RESPONSE } from 'src/constants';
+import { LoginService } from './login.service';
 
 @Controller('login')
 export class LoginController {
   constructor(private readonly loginService: LoginService) {}
 
   @Post()
-  async findOne(@Response() response, @Body() loginData: UserLoginRequestDto) {
+  async findOne(
+    @Response() response,
+    @Body(new ValidationPipe({ transform: true }))
+    loginData: UserLoginRequestDto,
+  ) {
     try {
       const userInfo = await this.loginService.findOne({
         username: loginData.username,
@@ -19,6 +29,10 @@ export class LoginController {
         userInfo?.password == loginData.password &&
         !!userInfo?.password
       ) {
+        const access_token = await this.loginService.createAccessToken({
+          userId: userInfo.userId + '',
+          role: userInfo.role,
+        });
         return response.status(HttpStatus.OK).json({
           request_id: 'string',
           status: 200,
@@ -26,11 +40,10 @@ export class LoginController {
           response_message: 'Login success',
           response_description: 'Login success',
           request_date_time: new Date().toISOString(),
-          access_token: 'string',
-          refresh_token: 'string',
+          access_token,
           data: userInfo,
         });
-      } else if (!!userInfo?.username) {
+      } else if (!userInfo?.username) {
         return response.status(HttpStatus.BAD_REQUEST).json({
           status: 400,
           description: 'Username is not exist',

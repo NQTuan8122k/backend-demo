@@ -7,6 +7,8 @@ import { AllExceptionsFilter } from './exceptions/http-exception.filter';
 import { UserModule } from './modules/user/user.module';
 import { LoginModule } from './modules/login/login.module';
 import { SignupModule } from './modules/signup/signup.module';
+import { SharedModule } from './shared/shared.module';
+import { ApiConfigService } from './shared/services/api-config.service';
 
 @Module({
   imports: [

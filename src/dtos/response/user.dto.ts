@@ -1,5 +1,12 @@
-import { Column } from 'typeorm';
-import { IsEmail, IsNotEmpty, Length, Max, Min } from 'class-validator';
+import {
+  IsEmail,
+  IsNotEmpty,
+  Length,
+  Max,
+  MaxLength,
+  MinLength,
+} from 'class-validator';
+import { RoleType } from 'src/constants/role-file';
 
 export class UserRegisterDto {
   @IsNotEmpty({ message: 'Full name cannot plank' })
@@ -8,16 +15,16 @@ export class UserRegisterDto {
   @IsNotEmpty({ message: 'Date of birth cannot plank' })
   dateOfBirth: string;
 
-  @Max(255, { message: 'Password must be less than 255 character' })
-  @Min(8, { message: 'Password must more than 8 character' })
+  @MaxLength(150, { message: 'Password must less than 150 characters' })
+  @MinLength(8, { message: 'Password must have at least 8 characters' })
   @IsNotEmpty({ message: 'Password cannot plank' })
   password: string;
 
-  @Max(150, { message: 'Username must be less than 150 character' })
+  @MaxLength(150, { message: 'Username must less than 150 characters' })
   @IsNotEmpty({ message: 'Username cannot plank' })
   username: string;
 
-  @Length(10, 10, { message: 'Phone number must be 10 character' })
+  @Length(10, 10, { message: 'Phone number must be 10 characters' })
   @IsNotEmpty({ message: 'Password cannot plank' })
   phoneNumber: string;
 
@@ -25,9 +32,11 @@ export class UserRegisterDto {
   @IsNotEmpty({ message: 'Email cannot plank' })
   email: string;
 
-  @Max(255, { message: 'address must be less than 255 character' })
+  @MaxLength(255, { message: 'address must be less than 255 characters' })
   @IsNotEmpty({ message: 'address cannot plank' })
   address: string;
 
   createAt: string;
+
+  role: RoleType;
 }
