@@ -2,13 +2,16 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { APP_FILTER } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { AllExceptionsFilter } from './exceptions/http-exception.filter';
 import { UserModule } from './modules/user/user.module';
 import { LoginModule } from './modules/login/login.module';
 import { SignupModule } from './modules/signup/signup.module';
 import { SharedModule } from './shared/shared.module';
 import { ApiConfigService } from './shared/services/api-config.service';
+import { ManpowerModule } from './modules/manpower/manpower.module';
+import { AuthModule } from './auth/auth.module';
+import { AuthGuard } from './auth/auth.guard';
 
 @Module({
   imports: [
@@ -26,6 +29,8 @@ import { ApiConfigService } from './shared/services/api-config.service';
     UserModule,
     LoginModule,
     SignupModule,
+    ManpowerModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [
@@ -33,6 +38,10 @@ import { ApiConfigService } from './shared/services/api-config.service';
     {
       provide: APP_FILTER,
       useClass: AllExceptionsFilter,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
     },
   ],
 })

@@ -4,7 +4,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { RoleType } from 'src/constants/role-file';
 import { TokenType } from 'src/constants/token-type';
 import { UserEntity } from 'src/entities/user/user.entity';
-import { TokenPayloadDto } from 'src/types/dtos/token.dto';
+import {
+  AccessTokenPayloadDto,
+  RefreshTokenPayloadDto,
+} from 'src/types/dtos/token.dto';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -23,8 +26,8 @@ export class LoginService {
   async createAccessToken(data: {
     role: string;
     userId: string;
-  }): Promise<TokenPayloadDto> {
-    return new TokenPayloadDto({
+  }): Promise<AccessTokenPayloadDto> {
+    return new AccessTokenPayloadDto({
       accessToken: await this.jwtService.signAsync({
         expiresIn: 3600,
         userId: data.userId,
@@ -32,5 +35,22 @@ export class LoginService {
         role: data.role,
       }),
     });
+  }
+
+  async createRefreshToken(data: {
+    role: string;
+    userId: string;
+  }): Promise<RefreshTokenPayloadDto> {
+    return new RefreshTokenPayloadDto({
+      refreshToken: await this.jwtService.signAsync({
+        expiresIn: 86400,
+        userId: data.userId,
+        type: TokenType.ACCESS_TOKEN,
+        role: data.role,
+      }),
+    });
+  }
+  async decodedJwtAccessToken(JwtPayload: string): Promise<unknown> {
+    return await this.jwtService.decode(JwtPayload);
   }
 }

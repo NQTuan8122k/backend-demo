@@ -33,6 +33,10 @@ export class LoginController {
           userId: userInfo.userId + '',
           role: userInfo.role,
         });
+        const refresh_token = await this.loginService.createRefreshToken({
+          userId: userInfo.userId + '',
+          role: userInfo.role,
+        });
         return response.status(HttpStatus.OK).json({
           request_id: 'string',
           status: 200,
@@ -40,7 +44,8 @@ export class LoginController {
           response_message: 'Login success',
           response_description: 'Login success',
           request_date_time: new Date().toISOString(),
-          access_token,
+          ...access_token,
+          ...refresh_token,
           data: userInfo,
         });
       } else if (!userInfo?.username) {

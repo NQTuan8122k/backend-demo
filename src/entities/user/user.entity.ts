@@ -7,6 +7,7 @@ import {
   ManyToMany,
   JoinTable,
 } from 'typeorm';
+import { ManpowerEntity } from '../Manpower/manpower.entity';
 
 @Entity()
 export class UserEntity {
@@ -45,4 +46,7 @@ export class UserEntity {
 
   @Column({ default: RoleType.USER })
   role: string;
+
+  @OneToMany(() => ManpowerEntity, (manpower) => manpower.user)
+  manpowers: ManpowerEntity[];
 }
